@@ -15,8 +15,16 @@ import { draftMode } from 'next/headers'
 
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
+import { HeaderScripts } from '@/components/Head/HeaderScripts'
+import { getHeaderGlobal } from '@/utilities/getHeaderGlobal'
+
+import { FooterScripts } from '@/components/Head/FooterScripts'
+import { getFooterGlobal } from '@/utilities/getFooterGlobal'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const header = await getHeaderGlobal()
+  const footer = await getFooterGlobal()
+
   const { isEnabled } = await draftMode()
 
   return (
@@ -25,6 +33,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        <HeaderScripts header={header} />
       </head>
       <body>
         <Providers>
@@ -38,6 +47,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {children}
           <Footer />
         </Providers>
+        <FooterScripts footer={footer} />
       </body>
     </html>
   )

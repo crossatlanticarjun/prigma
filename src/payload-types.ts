@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     pages: Page;
     posts: Post;
+    testimonials: Testimonial;
     media: Media;
     categories: Category;
     users: User;
@@ -91,6 +92,7 @@ export interface Config {
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -200,7 +202,64 @@ export interface Page {
       | null;
     media?: (string | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (
+    | CallToActionBlock
+    | ContentBlock
+    | MediaBlock
+    | ArchiveBlock
+    | FormBlock
+    | {
+        badgeText?: string | null;
+        heading: string;
+        description?: string | null;
+        cta: {
+          label: string;
+          href: string;
+          newTab?: boolean | null;
+        };
+        backgroundImage?: (string | null) | Media;
+        /**
+         * Optional right-side student image (PNG/WebP preferred).
+         */
+        foregroundImage?: (string | null) | Media;
+        valueCards?:
+          | {
+              icon: 'integrity' | 'transparency' | 'parentTrust' | 'excellence' | 'discipline';
+              title: string;
+              subtitle?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        overlay?: {
+          enabled?: boolean | null;
+          /**
+           * 0–100
+           */
+          opacity?: number | null;
+        };
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'heroBanner';
+      }
+    | PrigmaHeroBlock
+    | CoreValuesBlock
+    | CoreTeamBlock
+    | ProgramsBlock
+    | {
+        badge?: string | null;
+        heading?: string | null;
+        limit?: number | null;
+        viewMore?: {
+          label?: string | null;
+          href?: string | null;
+          newTab?: boolean | null;
+        };
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'testimonialsCarousel';
+      }
+    | PageHeaderBlock
+  )[];
   meta?: {
     title?: string | null;
     /**
@@ -781,6 +840,160 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PrigmaHeroBlock".
+ */
+export interface PrigmaHeroBlock {
+  leftImage: string | Media;
+  pillText: string;
+  heading: string;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  primaryCTA: {
+    label: string;
+    /**
+     * Internal path or full URL.
+     */
+    href: string;
+    newTab?: boolean | null;
+  };
+  phoneCTA: {
+    label: string;
+    phone: string;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'prigmaHero';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CoreValuesBlock".
+ */
+export interface CoreValuesBlock {
+  heading: string;
+  values: {
+    icon: string | Media;
+    title: string;
+    description: string;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'coreValues';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CoreTeamBlock".
+ */
+export interface CoreTeamBlock {
+  pillText: string;
+  heading: string;
+  members: {
+    photo: string | Media;
+    /**
+     * PHYSICS / MATHS / CHEMISTRY / OPERATIONS
+     */
+    tag: string;
+    name: string;
+    /**
+     * e.g., B-Tech IIT Kharagpur
+     */
+    subtitle?: string | null;
+    bullets?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'coreTeam';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProgramsBlock".
+ */
+export interface ProgramsBlock {
+  pillText: string;
+  heading: string;
+  programs: {
+    title: string;
+    meta: {
+      label: string;
+      value: string;
+      id?: string | null;
+    }[];
+    featuresHeading: string;
+    features: {
+      text: string;
+      id?: string | null;
+    }[];
+    id?: string | null;
+  }[];
+  bottomNote: {
+    prefix?: string | null;
+    highlightText: string;
+    highlightHref: string;
+    suffix?: string | null;
+    newTab?: boolean | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'programs';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PageHeaderBlock".
+ */
+export interface PageHeaderBlock {
+  title?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'pageHeader';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: string;
+  name: string;
+  marksObtained: string;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  photo: string | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -978,6 +1191,10 @@ export interface PayloadLockedDocument {
         value: string | Post;
       } | null)
     | ({
+        relationTo: 'testimonials';
+        value: string | Testimonial;
+      } | null)
+    | ({
         relationTo: 'media';
         value: string | Media;
       } | null)
@@ -1087,6 +1304,59 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
+        heroBanner?:
+          | T
+          | {
+              badgeText?: T;
+              heading?: T;
+              description?: T;
+              cta?:
+                | T
+                | {
+                    label?: T;
+                    href?: T;
+                    newTab?: T;
+                  };
+              backgroundImage?: T;
+              foregroundImage?: T;
+              valueCards?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    subtitle?: T;
+                    id?: T;
+                  };
+              overlay?:
+                | T
+                | {
+                    enabled?: T;
+                    opacity?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        prigmaHero?: T | PrigmaHeroBlockSelect<T>;
+        coreValues?: T | CoreValuesBlockSelect<T>;
+        coreTeam?: T | CoreTeamBlockSelect<T>;
+        programs?: T | ProgramsBlockSelect<T>;
+        testimonialsCarousel?:
+          | T
+          | {
+              badge?: T;
+              heading?: T;
+              limit?: T;
+              viewMore?:
+                | T
+                | {
+                    label?: T;
+                    href?: T;
+                    newTab?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        pageHeader?: T | PageHeaderBlockSelect<T>;
       };
   meta?:
     | T
@@ -1188,6 +1458,121 @@ export interface FormBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PrigmaHeroBlock_select".
+ */
+export interface PrigmaHeroBlockSelect<T extends boolean = true> {
+  leftImage?: T;
+  pillText?: T;
+  heading?: T;
+  description?: T;
+  primaryCTA?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        newTab?: T;
+      };
+  phoneCTA?:
+    | T
+    | {
+        label?: T;
+        phone?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CoreValuesBlock_select".
+ */
+export interface CoreValuesBlockSelect<T extends boolean = true> {
+  heading?: T;
+  values?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CoreTeamBlock_select".
+ */
+export interface CoreTeamBlockSelect<T extends boolean = true> {
+  pillText?: T;
+  heading?: T;
+  members?:
+    | T
+    | {
+        photo?: T;
+        tag?: T;
+        name?: T;
+        subtitle?: T;
+        bullets?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProgramsBlock_select".
+ */
+export interface ProgramsBlockSelect<T extends boolean = true> {
+  pillText?: T;
+  heading?: T;
+  programs?:
+    | T
+    | {
+        title?: T;
+        meta?:
+          | T
+          | {
+              label?: T;
+              value?: T;
+              id?: T;
+            };
+        featuresHeading?: T;
+        features?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  bottomNote?:
+    | T
+    | {
+        prefix?: T;
+        highlightText?: T;
+        highlightHref?: T;
+        suffix?: T;
+        newTab?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PageHeaderBlock_select".
+ */
+export interface PageHeaderBlockSelect<T extends boolean = true> {
+  title?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts_select".
  */
 export interface PostsSelect<T extends boolean = true> {
@@ -1216,6 +1601,18 @@ export interface PostsSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  name?: T;
+  marksObtained?: T;
+  description?: T;
+  photo?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1635,6 +2032,19 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Header {
   id: string;
+  contactNumber?: string | null;
+  contactEmail?: string | null;
+  slogan?: string | null;
+  socialLinks?:
+    | {
+        label: string;
+        iconKey: 'FaInstagram' | 'FaFacebookF' | 'FaXTwitter' | 'FaLinkedinIn' | 'FaYoutube' | 'FaWhatsapp';
+        url: string;
+        openInNewTab?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  logo?: (string | null) | Media;
   navItems?:
     | {
         link: {
@@ -1655,6 +2065,32 @@ export interface Header {
         id?: string | null;
       }[]
     | null;
+  contactButton: {
+    enabled?: boolean | null;
+    link: {
+      type?: ('reference' | 'custom') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: string | Page;
+          } | null)
+        | ({
+            relationTo: 'posts';
+            value: string | Post;
+          } | null);
+      url?: string | null;
+      label: string;
+    };
+    /**
+     * Optional. If empty, use the link label.
+     */
+    label?: string | null;
+  };
+  /**
+   * Paste scripts you want injected into <head>. Example: Google Analytics, Meta Pixel. Do not paste <body> scripts here.
+   */
+  headerScripts?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1664,6 +2100,15 @@ export interface Header {
  */
 export interface Footer {
   id: string;
+  centres?:
+    | {
+        title: string;
+        address: string;
+        email: string;
+        phone: string;
+        id?: string | null;
+      }[]
+    | null;
   navItems?:
     | {
         link: {
@@ -1684,6 +2129,52 @@ export interface Footer {
         id?: string | null;
       }[]
     | null;
+  legalItems?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: string | Page;
+              } | null)
+            | ({
+                relationTo: 'posts';
+                value: string | Post;
+              } | null);
+          url?: string | null;
+          label: string;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  socials?:
+    | {
+        platform: 'facebook' | 'instagram' | 'youtube' | 'linkedin' | 'x';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  contact?: {
+    phones?:
+      | {
+          phone: string;
+          id?: string | null;
+        }[]
+      | null;
+    emails?:
+      | {
+          email: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  copyrightText: string;
+  /**
+   * Paste scripts injected before </body>. Example: chat widget, tracking pixels, GTM noscript. Avoid <head> only scripts here.
+   */
+  footerScripts?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1692,6 +2183,19 @@ export interface Footer {
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
+  contactNumber?: T;
+  contactEmail?: T;
+  slogan?: T;
+  socialLinks?:
+    | T
+    | {
+        label?: T;
+        iconKey?: T;
+        url?: T;
+        openInNewTab?: T;
+        id?: T;
+      };
+  logo?: T;
   navItems?:
     | T
     | {
@@ -1706,6 +2210,22 @@ export interface HeaderSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  contactButton?:
+    | T
+    | {
+        enabled?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+        label?: T;
+      };
+  headerScripts?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1715,6 +2235,15 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
+  centres?:
+    | T
+    | {
+        title?: T;
+        address?: T;
+        email?: T;
+        phone?: T;
+        id?: T;
+      };
   navItems?:
     | T
     | {
@@ -1729,6 +2258,45 @@ export interface FooterSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  legalItems?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+        id?: T;
+      };
+  socials?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  contact?:
+    | T
+    | {
+        phones?:
+          | T
+          | {
+              phone?: T;
+              id?: T;
+            };
+        emails?:
+          | T
+          | {
+              email?: T;
+              id?: T;
+            };
+      };
+  copyrightText?: T;
+  footerScripts?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

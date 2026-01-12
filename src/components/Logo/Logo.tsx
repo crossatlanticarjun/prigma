@@ -1,29 +1,66 @@
-import clsx from 'clsx'
+'use client'
+
 import React from 'react'
+import clsx from 'clsx'
+import Image from 'next/image'
+
+type MediaSize = { url?: string | null }
+
+export type Media = {
+  url?: string | null
+  alt?: string | null
+  width?: number | null
+  height?: number | null
+  sizes?: {
+    thumbnail?: MediaSize
+    small?: MediaSize
+    medium?: MediaSize
+    large?: MediaSize
+  } | null
+}
 
 interface Props {
   className?: string
   loading?: 'lazy' | 'eager'
   priority?: 'auto' | 'high' | 'low'
+  // Payload upload relation can be an ID string when not populated
+  logo?: string | Media | null
+  fallbackSrc?: string
 }
 
-export const Logo = (props: Props) => {
-  const { loading: loadingFromProps, priority: priorityFromProps, className } = props
+export const Logo: React.FC<Props> = ({
+  className,
+  loading = 'lazy',
+  priority = 'low',
+  logo,
+  fallbackSrc = 'https://bba8wrr2lezn6wxq.public.blob.vercel-storage.com/logo-prigma.png',
+}) => {
+  const media = typeof logo === 'object' && logo ? logo : null
 
-  const loading = loadingFromProps || 'lazy'
-  const priority = priorityFromProps || 'low'
+  const src =
+    media?.url ??
+    media?.sizes?.medium?.url ??
+    media?.sizes?.small?.url ??
+    media?.sizes?.thumbnail?.url ??
+    fallbackSrc
+
+  const alt = media?.alt ?? 'Site Logo'
+
+  // next/image needs width/height numbers. Use media dimensions if present.
+  const width = (media?.width ?? 600) || 600
+  const height = (media?.height ?? 177) || 177
 
   return (
-    /* eslint-disable @next/next/no-img-element */
-    <img
-      alt="Payload Logo"
-      width={193}
-      height={34}
+    <Image
+      alt={alt}
+      width={width}
+      height={height}
       loading={loading}
       fetchPriority={priority}
-      decoding="async"
-      className={clsx('max-w-[9.375rem] w-full h-[34px]', className)}
-      src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-logo-light.svg"
+      className={clsx('h-auto max-h-[50px] w-auto object-contain', className)}
+      src={src}
+      // avoids remote domain config blocking during build
+      unoptimized
     />
   )
 }

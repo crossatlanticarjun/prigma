@@ -20,6 +20,13 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
+import { HeroBanner } from '@/blocks/HeroBanner/config'
+import { PrigmaHero } from '@/blocks/PrigmaHero/config'
+import { CoreValues } from '@/blocks/CoreValues/config'
+import { CoreTeam } from '@/blocks/CoreTeam/config'
+import { Programs } from '@/blocks/Programs/config'
+import { TestimonialsCarousel } from '@/blocks/TestimonialsCarousel/config'
+import { PageHeader } from '@/blocks/PageHeader/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -72,7 +79,20 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock],
+              blocks: [
+                CallToAction,
+                Content,
+                MediaBlock,
+                Archive,
+                FormBlock,
+                HeroBanner,
+                PrigmaHero,
+                CoreValues,
+                CoreTeam,
+                Programs,
+                TestimonialsCarousel,
+                PageHeader,
+              ],
               required: true,
               admin: {
                 initCollapsed: true,

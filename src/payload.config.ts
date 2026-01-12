@@ -14,6 +14,8 @@ import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { Testimonials } from './collections/Testimonials'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -60,10 +62,21 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URL || '',
   }),
-  collections: [Pages, Posts, Media, Categories, Users],
+  collections: [Pages, Posts, Testimonials, Media, Categories, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
-  plugins,
+  plugins: [
+    vercelBlobStorage({
+      enabled: true,
+      collections: {
+        media: true,
+      },
+      cacheControlMaxAge: 60 * 60 * 24 * 30,
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+    }),
+    ...plugins,
+    // storage-adapter-placeholder
+  ],
   secret: process.env.PAYLOAD_SECRET,
   sharp,
   typescript: {

@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react'
-
 import type { Page } from '@/payload-types'
 
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
@@ -7,45 +6,54 @@ import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
+import { HeroBanner } from '@/blocks/HeroBanner/Component'
+import { PrigmaHeroBlock } from '@/blocks/PrigmaHero/Component'
+import { CoreValuesBlock } from '@/blocks/CoreValues/Component'
+import { CoreTeamBlock } from '@/blocks/CoreTeam/Component'
+import { ProgramsBlock } from '@/blocks/Programs/Component'
+import { TestimonialsCarouselBlock } from '@/blocks/TestimonialsCarousel/Component'
+import { PageHeaderBlock } from '@/blocks/PageHeader/Component'
 
-const blockComponents = {
-  archive: ArchiveBlock,
-  content: ContentBlock,
-  cta: CallToActionBlock,
-  formBlock: FormBlock,
-  mediaBlock: MediaBlock,
+type LayoutBlock = NonNullable<Page['layout']>[number]
+type BlockRenderer = React.ComponentType<{ block: LayoutBlock }>
+
+function asSpreadProps<TProps extends object>(Comp: React.ComponentType<TProps>): BlockRenderer {
+  const Wrapped: BlockRenderer = ({ block }) => <Comp {...(block as unknown as TProps)} />
+  return Wrapped
 }
 
-export const RenderBlocks: React.FC<{
-  blocks: Page['layout'][0][]
-}> = (props) => {
-  const { blocks } = props
+const blockMap: Record<string, BlockRenderer> = {
+  archive: asSpreadProps(ArchiveBlock),
+  content: asSpreadProps(ContentBlock),
+  cta: asSpreadProps(CallToActionBlock),
+  formBlock: asSpreadProps(FormBlock),
+  mediaBlock: asSpreadProps(MediaBlock),
+  heroBanner: asSpreadProps(HeroBanner),
+  prigmaHero: asSpreadProps(PrigmaHeroBlock),
+  coreValues: asSpreadProps(CoreValuesBlock),
+  coreTeam: asSpreadProps(CoreTeamBlock),
+  programs: asSpreadProps(ProgramsBlock),
+  pageHeader: asSpreadProps(PageHeaderBlock),
 
-  const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
+  // This one already expects { block }
+  testimonialsCarousel: TestimonialsCarouselBlock as unknown as BlockRenderer,
+}
 
-  if (hasBlocks) {
-    return (
-      <Fragment>
-        {blocks.map((block, index) => {
-          const { blockType } = block
+export const RenderBlocks: React.FC<{ blocks: LayoutBlock[] }> = ({ blocks: layout }) => {
+  if (!Array.isArray(layout) || layout.length === 0) return null
 
-          if (blockType && blockType in blockComponents) {
-            const Block = blockComponents[blockType]
+  return (
+    <Fragment>
+      {layout.map((block, i) => {
+        const Block = blockMap[block.blockType]
+        if (!Block) return null
 
-            if (Block) {
-              return (
-                <div className="my-16" key={index}>
-                  {/* @ts-expect-error there may be some mismatch between the expected types here */}
-                  <Block {...block} disableInnerContainer />
-                </div>
-              )
-            }
-          }
-          return null
-        })}
-      </Fragment>
-    )
-  }
-
-  return null
+        return (
+          <div key={(block as { id?: string | null }).id ?? `${block.blockType}-${i}`}>
+            <Block block={block} />
+          </div>
+        )
+      })}
+    </Fragment>
+  )
 }
