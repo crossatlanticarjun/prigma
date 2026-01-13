@@ -39,6 +39,8 @@ type NavItem = ElementOf<NavItems>
 type Socials = NonNullable<FooterType['socials']>
 type SocialItem = ElementOf<Socials>
 
+type CentreItemWithMap = CentreItem & { googlemaplink?: string | null }
+
 // If you added legalItems but did not regenerate payload types yet, this keeps builds green.
 type FooterWithLegal = FooterType & { legalItems?: NavItems }
 
@@ -131,6 +133,27 @@ export async function Footer() {
                         </Link>
                       </p>
                     ) : null}
+
+                    {(() => {
+                      const url =
+                        typeof (c as any)?.googlemaplink === 'string'
+                          ? (c as any).googlemaplink.trim()
+                          : ''
+                      if (!url) return null
+
+                      return (
+                        <p className="text-white/90">
+                          <Link
+                            href={url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-white/90 hover:text-white font-semibold underline"
+                          >
+                            View Location on Google Maps
+                          </Link>
+                        </p>
+                      )
+                    })()}
                   </div>
                 </div>
               </div>

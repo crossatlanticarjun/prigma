@@ -20,6 +20,7 @@ export const Footer: GlobalConfig = {
         { name: 'address', type: 'text', required: true },
         { name: 'email', type: 'email', required: true },
         { name: 'phone', type: 'text', required: true },
+        { name: 'googlemaplink', type: 'text', required: true },
       ],
     },
 

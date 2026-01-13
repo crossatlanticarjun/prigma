@@ -2106,6 +2106,7 @@ export interface Footer {
         address: string;
         email: string;
         phone: string;
+        googlemaplink: string;
         id?: string | null;
       }[]
     | null;
@@ -2242,6 +2243,7 @@ export interface FooterSelect<T extends boolean = true> {
         address?: T;
         email?: T;
         phone?: T;
+        googlemaplink?: T;
         id?: T;
       };
   navItems?:
