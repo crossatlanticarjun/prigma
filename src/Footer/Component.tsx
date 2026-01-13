@@ -39,13 +39,20 @@ type NavItem = ElementOf<NavItems>
 type Socials = NonNullable<FooterType['socials']>
 type SocialItem = ElementOf<Socials>
 
-type CentreItemWithMap = CentreItem & { googlemaplink?: string | null }
-
 // If you added legalItems but did not regenerate payload types yet, this keeps builds green.
 type FooterWithLegal = FooterType & { legalItems?: NavItems }
 
 // If you kept a legacy single email field, this safely reads it without any/ts-ignore.
 type FooterWithLegacyEmail = FooterType & { contact?: FooterType['contact'] & { email?: unknown } }
+
+type CentreWithMap = CentreItem & { googlemaplink?: unknown }
+
+function getGoogleMapLink(c: CentreItem): string | null {
+  const url = (c as CentreWithMap).googlemaplink
+  if (typeof url !== 'string') return null
+  const trimmed = url.trim()
+  return trimmed ? trimmed : null
+}
 
 function getLegalItems(footerData: FooterType): NavItems {
   const maybe = footerData as unknown as FooterWithLegal
@@ -135,10 +142,7 @@ export async function Footer() {
                     ) : null}
 
                     {(() => {
-                      const url =
-                        typeof (c as any)?.googlemaplink === 'string'
-                          ? (c as any).googlemaplink.trim()
-                          : ''
+                      const url = getGoogleMapLink(c)
                       if (!url) return null
 
                       return (
@@ -148,8 +152,9 @@ export async function Footer() {
                             target="_blank"
                             rel="noreferrer"
                             className="text-white/90 hover:text-white font-semibold underline"
+                            aria-label={`Locate ${c?.title ?? 'centre'} on Google Maps`}
                           >
-                            View Location on Google Maps
+                            Locate on Google Maps
                           </Link>
                         </p>
                       )
