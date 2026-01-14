@@ -75,7 +75,7 @@ export const StudentsShowcaseBlock: React.FC<Props> = ({ heading, students }) =>
                       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     />
                   ) : (
-                    <div className="absolute inset-0 flex items-center justify-center text-sm text-black/50">
+                    <div className="absolute inset-0 flex items-center justify-center text-sm text-black/60">
                       No image
                     </div>
                   )}
