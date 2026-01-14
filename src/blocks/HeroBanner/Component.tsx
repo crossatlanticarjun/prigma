@@ -2,9 +2,9 @@
 
 import React from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { ShieldCheck, Eye, HeartHandshake, Award, Focus, type LucideIcon } from 'lucide-react'
 import { HiMiniArrowTopRightOnSquare } from 'react-icons/hi2'
+import { useEnquiryPopup } from '@/components/EnquiryPopup/EnquiryPopupProvider'
 
 type Media = {
   url?: string | null
@@ -88,7 +88,7 @@ export function HeroBanner(props: HeroBannerBlockProps) {
     0,
     3,
   )
-
+  const { open } = useEnquiryPopup()
   return (
     <section className="relative isolate w-full overflow-hidden">
       <div className="relative w-full">
@@ -188,12 +188,13 @@ export function HeroBanner(props: HeroBannerBlockProps) {
                 </p>
               ) : null}
 
-              {props.cta?.href && props.cta?.label ? (
+              {/* {props.cta?.href && props.cta?.label ? (
                 <div className="mt-10">
                   <Link
                     href={props.cta.href}
                     target={props.cta.newTab ? '_blank' : undefined}
                     rel={props.cta.newTab ? 'noreferrer noopener' : undefined}
+                    onClick={() => open()}
                     className="flex justify-between md:inline-flex items-center gap-4 rounded-full bg-themeOrange pl-10 pr-2 py-2 text-lg font-semibold text-white shadow-[0_18px_40px_rgba(0,0,0,0.35)] transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-white/60"
                   >
                     {props.cta.label}
@@ -202,7 +203,17 @@ export function HeroBanner(props: HeroBannerBlockProps) {
                     </span>
                   </Link>
                 </div>
-              ) : null}
+              ) : null} */}
+
+              <button
+                onClick={() => open()}
+                className="mt-10 hidden md:flex justify-between md:inline-flex items-center gap-4 rounded-full bg-themeOrange pl-10 pr-2 py-2 text-lg font-semibold text-white shadow-[0_18px_40px_rgba(0,0,0,0.35)] transition hover:bg-themeBlue focus:outline-none outline-none duration-500 group"
+              >
+                Enquire Now
+                <span className="grid h-12 w-12 place-items-center rounded-full bg-white text-xl">
+                  <HiMiniArrowTopRightOnSquare className="text-themeOrange group-hover:text-themeBlue" />
+                </span>
+              </button>
             </div>
 
             {/* Mobile cards */}
@@ -228,6 +239,15 @@ export function HeroBanner(props: HeroBannerBlockProps) {
                   )
                 })}
               </div>
+              <button
+                onClick={() => open()}
+                className="mt-10 flex md:hidden mx-auto justify-between md:inline-flex items-center gap-4 rounded-full bg-themeOrange pl-10 pr-2 py-2 text-lg font-semibold text-white shadow-[0_18px_40px_rgba(0,0,0,0.35)] transition hover:bg-themeBlue focus:outline-none outline-none duration-500 group"
+              >
+                Enquire Now
+                <span className="grid h-12 w-12 place-items-center rounded-full bg-white text-xl">
+                  <HiMiniArrowTopRightOnSquare className="text-themeOrange group-hover:text-themeBlue" />
+                </span>
+              </button>
             </div>
 
             {/* Mobile students: contained, centered, safe height */}

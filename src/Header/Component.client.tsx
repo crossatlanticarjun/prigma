@@ -133,7 +133,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
     'Contact us'
 
   const contactHref =
-    contactBtn?.link?.url || contactBtn?.link?.href || contactBtn?.link?.link || '/contact'
+    contactBtn?.link?.url || contactBtn?.link?.href || contactBtn?.link?.link || '/contact-us'
 
   return (
     <header className="relative z-50" {...(theme ? { 'data-theme': theme } : {})}>
@@ -210,7 +210,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
               {contactEnabled ? (
                 <Link
                   href={contactHref}
-                  className="hidden sm:inline-flex items-center gap-3 rounded-md bg-themeOrange px-5 py-3 text-sm font-semibold text-white hover:bg-orange-600 duration-500"
+                  className="hidden sm:inline-flex items-center gap-3 rounded-md bg-themeOrange px-5 py-3 text-sm font-semibold text-white hover:bg-slate-950 duration-500"
                 >
                   <span>{contactLabel}</span>
                   <MoveRight aria-hidden="true" />
@@ -274,7 +274,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
                 <Link
                   href={contactHref}
                   onClick={() => setMobileOpen(false)}
-                  className="inline-flex w-full items-center justify-center gap-3 rounded-md bg-themeOrange px-5 py-3 text-sm font-semibold text-white hover:bg-orange-600 duration-500"
+                  className="inline-flex w-full items-center justify-center gap-3 rounded-md bg-themeOrange px-5 py-3 text-sm font-semibold text-white hover:bg-slate-950 duration-500"
                 >
                   <span>{contactLabel}</span>
                   <MoveRight aria-hidden="true" />

@@ -93,6 +93,7 @@ export const TestimonialsCarouselClient: React.FC<Props> = ({
             onSwiper={(s) => (swiperRef.current = s)}
             spaceBetween={18}
             slidesPerView={1}
+            loop={true}
             breakpoints={{
               640: { slidesPerView: 1 },
               768: { slidesPerView: 2 },
@@ -109,14 +110,14 @@ export const TestimonialsCarouselClient: React.FC<Props> = ({
                 <SwiperSlide key={t.id}>
                   <article className="h-full rounded-xl bg-themeBlue/5 p-6">
                     <div className="flex items-center gap-4">
-                      <div className="relative h-20 w-20 md:h-24 md:w-24 shrink-0 overflow-hidden rounded-full">
+                      <div className="relative h-[120px] w-[120px] md:h-36 md:w-36 shrink-0 overflow-hidden rounded-full">
                         {photoUrl ? (
                           <Image
                             src={photoUrl}
                             alt={name}
                             fill
                             className="object-cover"
-                            sizes="96px"
+                            sizes="128px"
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center text-xs text-black/50">
@@ -134,7 +135,7 @@ export const TestimonialsCarouselClient: React.FC<Props> = ({
                       </div>
                     </div>
 
-                    <div className="mt-4 prose prose-sm max-w-full text-slate-600 leading-6 line-clamp-6">
+                    <div className="prose prose-sm max-w-full text-slate-600 leading-6 line-clamp-6">
                       <RichText data={t.description} />
                     </div>
                   </article>

@@ -20,10 +20,14 @@ import { getHeaderGlobal } from '@/utilities/getHeaderGlobal'
 
 import { FooterScripts } from '@/components/Head/FooterScripts'
 import { getFooterGlobal } from '@/utilities/getFooterGlobal'
+import { EnquiryPopupProvider } from '@/components/EnquiryPopup/EnquiryPopupProvider'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const header = await getHeaderGlobal()
   const footer = await getFooterGlobal()
+
+  const ENQ_FORM_ID = process.env.ENQ_FORM_ID
+  if (!ENQ_FORM_ID) throw new Error('Missing ENQ_FORM_ID in environment')
 
   const { isEnabled } = await draftMode()
 
@@ -34,20 +38,24 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
         <HeaderScripts header={header} />
+        <FooterScripts footer={footer} />
       </head>
+
       <body>
         <Providers>
-          <AdminBar
-            adminBarProps={{
-              preview: isEnabled,
-            }}
-          />
+          <AdminBar adminBarProps={{ preview: isEnabled }} />
 
-          <Header />
-          {children}
-          <Footer />
+          <EnquiryPopupProvider
+            defaultOptions={{
+              formId: ENQ_FORM_ID,
+              privacyHref: '/privacy-policy',
+            }}
+          >
+            <Header />
+            {children}
+            <Footer />
+          </EnquiryPopupProvider>
         </Providers>
-        <FooterScripts footer={footer} />
       </body>
     </html>
   )

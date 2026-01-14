@@ -1,5 +1,7 @@
+'use client'
 import Link from 'next/link'
 import React from 'react'
+import { useEnquiryPopup } from '@/components/EnquiryPopup/EnquiryPopupProvider'
 
 type Program = {
   title: string
@@ -23,6 +25,7 @@ type Props = {
 
 export const ProgramsBlock: React.FC<Props> = ({ pillText, heading, programs, bottomNote }) => {
   const bn = bottomNote
+  const { open } = useEnquiryPopup()
 
   return (
     <section className="w-full bg-themeBlue/5 py-12 md:py-16">
@@ -37,9 +40,12 @@ export const ProgramsBlock: React.FC<Props> = ({ pillText, heading, programs, bo
           </h2>
         </div>
 
-        <div className="mt-16 grid gap-8 md:grid-cols-2">
+        <div className="mt-16 grid gap-8 md:grid-cols-2 items-stretch">
           {programs?.map((p, i) => (
-            <div key={i} className="rounded-xl bg-themeBlue px-6 pb-6 md:px-8 md:pb-8">
+            <div
+              key={i}
+              className="rounded-xl bg-themeBlue px-6 pb-6 md:px-8 md:pb-8 h-full flex flex-col"
+            >
               {/* top title pill */}
               <div className="mx-auto w-full rounded-xl bg-white px-6 py-2 text-center text-base font-semibold text-themeBlue md:text-lg border-2 border-themeBlue -translate-y-[20px]">
                 {p.title}
@@ -57,7 +63,7 @@ export const ProgramsBlock: React.FC<Props> = ({ pillText, heading, programs, bo
               </div>
 
               {/* features card */}
-              <div className="mt-7 rounded-2xl bg-white p-6 text-slate-950 shadow-sm">
+              <div className="mt-7 rounded-2xl bg-white p-6 text-slate-950 shadow-sm flex-1">
                 <div className="mb-3 text-lg font-semibold">
                   {p.featuresHeading ?? 'Course features'}
                 </div>
@@ -91,6 +97,10 @@ export const ProgramsBlock: React.FC<Props> = ({ pillText, heading, programs, bo
             ) : (
               <Link
                 href={bn.highlightHref}
+                onClick={(e) => {
+                  e.preventDefault()
+                  open()
+                }}
                 target={bn.newTab ? '_blank' : undefined}
                 rel={bn.newTab ? 'noreferrer noopener' : undefined}
                 className="text-themeOrange hover:text-themeBlue transition duration-500"

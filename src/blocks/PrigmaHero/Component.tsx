@@ -45,7 +45,7 @@ export const PrigmaHeroBlock: React.FC<Props> = (props) => {
     <section className="w-full">
       <div className="mx-auto container py-8 md:py-16">
         <div className="grid items-stretch gap-6 md:grid-cols-2 md:gap-10">
-          <div className="relative overflow-hidden rounded-2xl bg-neutral-900">
+          <div className="relative overflow-hidden rounded-2xl bg-neutral-900 order-2 md:order-1">
             {imgSrc ? (
               <Image
                 src={imgSrc}
@@ -62,7 +62,7 @@ export const PrigmaHeroBlock: React.FC<Props> = (props) => {
             )}
           </div>
 
-          <div className="flex flex-col justify-center">
+          <div className="flex flex-col justify-center order-1 md:order-2">
             <div className="mb-4">
               <span className="mx-auto inline-flex rounded-full bg-themeBlue px-6 py-2 text-md text-white">
                 {props.pillText ?? 'About PRiGma'}
@@ -77,7 +77,29 @@ export const PrigmaHeroBlock: React.FC<Props> = (props) => {
               <RichText data={props.description} />
             </div>
 
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="md:hidden">
+              {isExternal ? (
+                <a
+                  href={cta.href}
+                  target={ctaTarget}
+                  rel={ctaRel}
+                  className="text-themeOrange font-semibold text-sm mt-2"
+                >
+                  {cta.label}
+                </a>
+              ) : (
+                <Link
+                  href={cta.href}
+                  target={ctaTarget}
+                  rel={ctaRel}
+                  className="text-themeOrange font-semibold text-sm mt-2"
+                >
+                  {cta.label}
+                </Link>
+              )}
+            </div>
+
+            <div className="mt-8 hidden md:flex flex-col gap-4 sm:flex-row sm:items-center">
               {isExternal ? (
                 <a
                   href={cta.href}
@@ -124,8 +146,6 @@ export const PrigmaHeroBlock: React.FC<Props> = (props) => {
                 </div>
               </div>
             </div>
-
-            <div className="mt-2 text-xs text-neutral-500 sm:hidden">Tap to call. No excuses.</div>
           </div>
         </div>
       </div>

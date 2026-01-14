@@ -12,7 +12,9 @@ import { CoreValuesBlock } from '@/blocks/CoreValues/Component'
 import { CoreTeamBlock } from '@/blocks/CoreTeam/Component'
 import { ProgramsBlock } from '@/blocks/Programs/Component'
 import { TestimonialsCarouselBlock } from '@/blocks/TestimonialsCarousel/Component'
+import { TestimonialsListBlock } from '@/blocks/TestimonialsList/Component'
 import { PageHeaderBlock } from '@/blocks/PageHeader/Component'
+import { StudentsShowcaseBlock } from '@/blocks/StudentsShowcase/Component'
 
 type LayoutBlock = NonNullable<Page['layout']>[number]
 type BlockRenderer = React.ComponentType<{ block: LayoutBlock }>
@@ -34,6 +36,8 @@ const blockMap: Record<string, BlockRenderer> = {
   coreTeam: asSpreadProps(CoreTeamBlock),
   programs: asSpreadProps(ProgramsBlock),
   pageHeader: asSpreadProps(PageHeaderBlock),
+  testimonialsList: asSpreadProps(TestimonialsListBlock),
+  studentsShowcase: asSpreadProps(StudentsShowcaseBlock),
 
   // This one already expects { block }
   testimonialsCarousel: TestimonialsCarouselBlock as unknown as BlockRenderer,

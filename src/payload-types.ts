@@ -114,10 +114,12 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    homePopup: HomePopup;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    homePopup: HomePopupSelect<false> | HomePopupSelect<true>;
   };
   locale: null;
   user: User & {
@@ -2181,6 +2183,19 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homePopup".
+ */
+export interface HomePopup {
+  id: string;
+  image?: (string | null) | Media;
+  link?: string | null;
+  openInNewTab?: boolean | null;
+  enabled?: boolean | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -2299,6 +2314,19 @@ export interface FooterSelect<T extends boolean = true> {
       };
   copyrightText?: T;
   footerScripts?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homePopup_select".
+ */
+export interface HomePopupSelect<T extends boolean = true> {
+  image?: T;
+  link?: T;
+  openInNewTab?: T;
+  enabled?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

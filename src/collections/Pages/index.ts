@@ -26,7 +26,9 @@ import { CoreValues } from '@/blocks/CoreValues/config'
 import { CoreTeam } from '@/blocks/CoreTeam/config'
 import { Programs } from '@/blocks/Programs/config'
 import { TestimonialsCarousel } from '@/blocks/TestimonialsCarousel/config'
+import { testimonialsList } from '@/blocks/TestimonialsList'
 import { PageHeader } from '@/blocks/PageHeader/config'
+import { StudentsShowcase } from '@/blocks/StudentsShowcase/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -91,7 +93,9 @@ export const Pages: CollectionConfig<'pages'> = {
                 CoreTeam,
                 Programs,
                 TestimonialsCarousel,
+                testimonialsList,
                 PageHeader,
+                StudentsShowcase,
               ],
               required: true,
               admin: {
