@@ -64,13 +64,14 @@ export const StudentsShowcaseBlock: React.FC<Props> = ({ heading, students }) =>
                 key={s.id ?? `${s.name}-${idx}`}
                 className="rounded-2xl bg-white shadow-sm border border-black/5 overflow-hidden"
               >
-                <div className="relative aspect-square bg-black/5">
+                <div className="bg-black/5">
                   {url ? (
                     <Image
                       src={url}
                       alt={alt}
-                      fill
-                      className="object-cover"
+                      width={468}
+                      height={565}
+                      className=""
                       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     />
                   ) : (

@@ -3,6 +3,7 @@ import { MapPin, Mail, Phone, ExternalLink } from 'lucide-react'
 
 type Centre = {
   id?: string | null
+  locationAddress: string
   locationTitle: string
   emailPrimary: string
   phone: string
@@ -70,13 +71,14 @@ export const StudyCentresBlock: React.FC<Props> = ({ heading, subheading, centre
                     </a>
                   ) : null}
 
-                  <a
-                    href={`tel:${c.phone}`}
-                    className="flex items-center gap-3 rounded-lg border border-black/5 px-4 py-3 hover:bg-black/[0.02] transition"
-                  >
+                  <div className="flex items-center gap-3 rounded-lg border border-black/5 px-4 py-3 hover:bg-black/[0.02] transition">
                     <Phone className="h-4 w-4 text-themeOrange shrink-0" />
                     <span className="text-sm text-themeHeading">{c.phone}</span>
-                  </a>
+                  </div>
+                  <div className="flex items-center gap-3 rounded-lg border border-black/5 px-4 py-3 hover:bg-black/[0.02] transition">
+                    <MapPin className="h-4 w-4 text-themeOrange shrink-0" />
+                    <span className="text-sm text-themeHeading">{c.locationAddress}</span>
+                  </div>
                 </div>
 
                 <div className="mt-5">
