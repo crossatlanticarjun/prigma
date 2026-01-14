@@ -114,7 +114,7 @@ export const FormBlock: React.FC<
   )
 
   return (
-    <div className="container lg:max-w-[48rem]">
+    <div className="container lg:max-w-[48rem] py-12 md:py-16 ">
       {enableIntro && introContent && !hasSubmitted && (
         <RichText className="mb-8 lg:mb-12" data={introContent} enableGutter={false} />
       )}
@@ -151,7 +151,12 @@ export const FormBlock: React.FC<
                   })}
               </div>
 
-              <Button form={formID} type="submit" variant="default">
+              <Button
+                form={formID}
+                type="submit"
+                variant="default"
+                className="bg-themeOrange px-8 py-4 hover:bg-slate-950 duration-500"
+              >
                 {submitButtonLabel}
               </Button>
             </form>

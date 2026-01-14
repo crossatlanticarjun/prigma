@@ -20,7 +20,7 @@ export const Email: React.FC<
         {label}
 
         {required && (
-          <span className="required">
+          <span className="required text-rose-600">
             * <span className="sr-only">(required)</span>
           </span>
         )}

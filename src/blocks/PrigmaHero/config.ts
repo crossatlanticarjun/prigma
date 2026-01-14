@@ -18,7 +18,6 @@ export const PrigmaHero: Block = {
     {
       name: 'pillText',
       type: 'text',
-      required: true,
       defaultValue: 'About PRiGma',
     },
 
@@ -39,11 +38,10 @@ export const PrigmaHero: Block = {
       name: 'primaryCTA',
       type: 'group',
       fields: [
-        { name: 'label', type: 'text', required: true, defaultValue: 'Learn More' },
+        { name: 'label', type: 'text', defaultValue: 'Learn More' },
         {
           name: 'href',
           type: 'text',
-          required: true,
           defaultValue: '/about',
           admin: { description: 'Internal path or full URL.' },
         },
@@ -59,11 +57,10 @@ export const PrigmaHero: Block = {
       name: 'phoneCTA',
       type: 'group',
       fields: [
-        { name: 'label', type: 'text', required: true, defaultValue: 'Phone Number' },
+        { name: 'label', type: 'text', defaultValue: 'Phone Number' },
         {
           name: 'phone',
           type: 'text',
-          required: true,
           defaultValue: '+91 79050 74634',
         },
       ],

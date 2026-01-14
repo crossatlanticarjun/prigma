@@ -29,6 +29,7 @@ import { TestimonialsCarousel } from '@/blocks/TestimonialsCarousel/config'
 import { testimonialsList } from '@/blocks/TestimonialsList'
 import { PageHeader } from '@/blocks/PageHeader/config'
 import { StudentsShowcase } from '@/blocks/StudentsShowcase/config'
+import { StudyCentres } from '@/blocks/StudyCentres/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -96,6 +97,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 testimonialsList,
                 PageHeader,
                 StudentsShowcase,
+                StudyCentres,
               ],
               required: true,
               admin: {

@@ -15,6 +15,7 @@ import { TestimonialsCarouselBlock } from '@/blocks/TestimonialsCarousel/Compone
 import { TestimonialsListBlock } from '@/blocks/TestimonialsList/Component'
 import { PageHeaderBlock } from '@/blocks/PageHeader/Component'
 import { StudentsShowcaseBlock } from '@/blocks/StudentsShowcase/Component'
+import { StudyCentresBlock } from '@/blocks/StudyCentres/Component'
 
 type LayoutBlock = NonNullable<Page['layout']>[number]
 type BlockRenderer = React.ComponentType<{ block: LayoutBlock }>
@@ -38,6 +39,7 @@ const blockMap: Record<string, BlockRenderer> = {
   pageHeader: asSpreadProps(PageHeaderBlock),
   testimonialsList: asSpreadProps(TestimonialsListBlock),
   studentsShowcase: asSpreadProps(StudentsShowcaseBlock),
+  studyCentres: asSpreadProps(StudyCentresBlock),
 
   // This one already expects { block }
   testimonialsCarousel: TestimonialsCarouselBlock as unknown as BlockRenderer,

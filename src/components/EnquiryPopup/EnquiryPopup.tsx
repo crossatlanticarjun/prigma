@@ -8,6 +8,7 @@ type Field =
   | { name: string; label?: string; required?: boolean; blockType: 'email' }
   | { name: string; label?: string; required?: boolean; blockType: 'textarea' }
   | { name: string; label?: string; required?: boolean; blockType: 'checkbox' }
+  | { name: string; label?: string; required?: boolean; blockType: 'number' }
 
 type PayloadForm = {
   id: string
@@ -22,6 +23,36 @@ type Props = {
   heading: string
   subheading: string
   privacyHref: string
+}
+
+type SubmitSuccess = { id: string }
+type SubmitError = { message?: string; errors?: { message?: string }[] }
+type SubmitResponse = SubmitSuccess | SubmitError | null
+
+function isSubmitSuccess(v: unknown): v is SubmitSuccess {
+  return (
+    typeof v === 'object' &&
+    v !== null &&
+    'id' in v &&
+    typeof (v as Record<string, unknown>).id === 'string'
+  )
+}
+
+function getErrorMessage(v: unknown): string | null {
+  if (typeof v !== 'object' || v === null) return null
+  const obj = v as Record<string, unknown>
+
+  const errors = obj.errors
+  if (Array.isArray(errors) && errors.length > 0) {
+    const first = errors[0]
+    if (typeof first === 'object' && first !== null) {
+      const em = (first as Record<string, unknown>).message
+      if (typeof em === 'string' && em.trim()) return em
+    }
+  }
+
+  const message = obj.message
+  return typeof message === 'string' && message.trim() ? message : null
 }
 
 export function EnquiryPopup({ open, onClose, formId, heading, subheading, privacyHref }: Props) {
@@ -54,7 +85,7 @@ export function EnquiryPopup({ open, onClose, formId, heading, subheading, priva
     return () => window.removeEventListener('keydown', onKey)
   }, [open, onClose])
 
-  // Fetch form by ID via server proxy route (recommended)
+  // Fetch form by ID via server proxy route
   useEffect(() => {
     if (!open) return
     if (!formId) {
@@ -100,17 +131,24 @@ export function EnquiryPopup({ open, onClose, formId, heading, subheading, priva
 
   const setVal = (name: string, v: unknown) => setValues((prev) => ({ ...prev, [name]: v }))
 
-  const validate = () => {
+  const validate = (): string | null => {
     for (const f of fields) {
       if (!f?.required) continue
       const v = values[f.name]
 
       if (f.blockType === 'checkbox') {
         if (v !== true) return `${f.label ?? f.name} is required`
-      } else {
-        if (typeof v !== 'string' || v.trim().length === 0)
-          return `${f.label ?? f.name} is required`
+        continue
       }
+
+      if (f.blockType === 'number') {
+        const s = typeof v === 'string' ? v.trim() : String(v ?? '').trim()
+        if (!s) return `${f.label ?? f.name} is required`
+        if (!/^\d+$/.test(s)) return `${f.label ?? f.name} must be a valid number`
+        continue
+      }
+
+      if (typeof v !== 'string' || v.trim().length === 0) return `${f.label ?? f.name} is required`
     }
     return null
   }
@@ -133,26 +171,42 @@ export function EnquiryPopup({ open, onClose, formId, heading, subheading, priva
     setError(null)
 
     try {
-      // Uses Payload forms submissions REST endpoint.
-      // If your collection slug differs, change this route accordingly.
+      const submissionData = fields.map((f) => {
+        const raw = values[f.name]
+        const value =
+          typeof raw === 'string'
+            ? raw
+            : typeof raw === 'boolean'
+              ? raw
+                ? 'true'
+                : 'false'
+              : raw == null
+                ? ''
+                : String(raw)
+
+        return { field: f.name, value }
+      })
+
       const res = await fetch('/api/form-submissions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          form: formId, // IMPORTANT: use the ID you passed in
-          submissionData: values,
-        }),
+        body: JSON.stringify({ form: formId, submissionData }),
       })
 
+      const data: SubmitResponse = await res.json().catch(() => null)
+
       if (!res.ok) {
-        const txt = await res.text().catch(() => '')
-        throw new Error(txt || `Submit failed (${res.status})`)
+        const msg = getErrorMessage(data) || `Submit failed (${res.status})`
+        throw new Error(msg)
+      }
+
+      if (!isSubmitSuccess(data)) {
+        throw new Error('Submission saved but response did not include an id')
       }
 
       setDone(true)
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : 'Submit failed'
-      setError(msg)
+      setError(e instanceof Error ? e.message : 'Submit failed')
     } finally {
       setSubmitting(false)
     }
@@ -176,7 +230,8 @@ export function EnquiryPopup({ open, onClose, formId, heading, subheading, priva
             <div className="flex justify-end">
               <button
                 onClick={onClose}
-                className="rounded-full bg-white/10 w-6 h-6 text-sm hover:bg-white/20"
+                className="rounded-full bg-white/10 w-8 h-8 text-sm hover:bg-white/20"
+                aria-label="Close"
               >
                 ✕
               </button>
@@ -234,7 +289,7 @@ export function EnquiryPopup({ open, onClose, formId, heading, subheading, priva
                             type="checkbox"
                             checked={(values[f.name] as boolean) ?? false}
                             onChange={(e) => setVal(f.name, e.target.checked)}
-                            className="h-8 w-8 rounded border border-slate-600"
+                            className="h-8 w-8 mt-0.5 rounded border border-slate-600"
                           />
                           <span>
                             I understand that your personal data will be used in accordance with the{' '}
@@ -247,16 +302,17 @@ export function EnquiryPopup({ open, onClose, formId, heading, subheading, priva
                       )
                     }
 
-                    const type = f.blockType === 'email' ? 'email' : 'text'
+                    const inputType =
+                      f.blockType === 'email' ? 'email' : f.blockType === 'number' ? 'tel' : 'text'
 
                     return (
                       <input
                         key={f.name}
-                        type={type}
+                        type={inputType}
                         placeholder={placeholder}
                         value={(values[f.name] as string) ?? ''}
                         onChange={(e) => setVal(f.name, e.target.value)}
-                        className="w-full rounded-ls bg-white p-3 text-sm text-slate-800 outline-none placeholder:text-slate-600"
+                        className="w-full rounded-lg bg-white p-3 text-sm text-slate-800 outline-none placeholder:text-slate-600"
                       />
                     )
                   })}
@@ -265,7 +321,7 @@ export function EnquiryPopup({ open, onClose, formId, heading, subheading, priva
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="flex justify-between md:inline-flex items-center gap-4 rounded-full bg-themeOrange pl-10 pr-2 py-2 text-lg font-semibold text-white shadow-[0_18px_40px_rgba(0,0,0,0.35)] transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-white/60"
+                      className="flex justify-between md:inline-flex items-center gap-4 rounded-full bg-themeOrange pl-10 pr-2 py-2 text-lg font-semibold text-white shadow-[0_18px_40px_rgba(0,0,0,0.35)] transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-white/60 disabled:opacity-60"
                     >
                       {submitting ? 'Submitting…' : 'Submit Request'}
                       <span className="grid h-12 w-12 place-items-center rounded-full bg-white text-xl">
