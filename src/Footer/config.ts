@@ -74,6 +74,7 @@ export const Footer: GlobalConfig = {
             { label: 'YouTube', value: 'youtube' },
             { label: 'LinkedIn', value: 'linkedin' },
             { label: 'X', value: 'x' },
+            { label: 'Whatsapp', value: 'whatsapp' },
           ],
         },
         {

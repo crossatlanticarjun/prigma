@@ -72,6 +72,8 @@ export interface Config {
     testimonials: Testimonial;
     media: Media;
     categories: Category;
+    'course-category': CourseCategory;
+    course: Course;
     users: User;
     redirects: Redirect;
     forms: Form;
@@ -95,6 +97,8 @@ export interface Config {
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    'course-category': CourseCategorySelect<false> | CourseCategorySelect<true>;
+    course: CourseSelect<false> | CourseSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
@@ -260,7 +264,57 @@ export interface Page {
         blockName?: string | null;
         blockType: 'testimonialsCarousel';
       }
+    | TestimonialsListBlock
     | PageHeaderBlock
+    | {
+        heading: string;
+        students: {
+          image: string | Media;
+          name: string;
+          stream: string;
+          /**
+           * Example: 1, 23, 145 (must be >= 1)
+           */
+          rank?: string | null;
+          id?: string | null;
+        }[];
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'studentsShowcase';
+      }
+    | {
+        heading: string;
+        subheading?: string | null;
+        centres: {
+          locationTitle: string;
+          locationAddress: string;
+          emailPrimary: string;
+          phone: string;
+          emailSecondary?: string | null;
+          googleMapUrl: string;
+          id?: string | null;
+        }[];
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'studyCentres';
+      }
+    | {
+        heading?: string | null;
+        /**
+         * Used for course detail links. Example: /prigma-courses
+         */
+        basePath?: string | null;
+        /**
+         * Safety cap for list page queries.
+         */
+        maxCourses?: number | null;
+        showCategoryDescription?: boolean | null;
+        showCourseDescription?: boolean | null;
+        hideEmptyCategories?: boolean | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'coursesExplorer';
+      }
   )[];
   meta?: {
     title?: string | null;
@@ -846,7 +900,7 @@ export interface Form {
  */
 export interface PrigmaHeroBlock {
   leftImage: string | Media;
-  pillText: string;
+  pillText?: string | null;
   heading: string;
   description: {
     root: {
@@ -863,17 +917,17 @@ export interface PrigmaHeroBlock {
     };
     [k: string]: unknown;
   };
-  primaryCTA: {
-    label: string;
+  primaryCTA?: {
+    label?: string | null;
     /**
      * Internal path or full URL.
      */
-    href: string;
+    href?: string | null;
     newTab?: boolean | null;
   };
-  phoneCTA: {
-    label: string;
-    phone: string;
+  phoneCTA?: {
+    label?: string | null;
+    phone?: string | null;
   };
   id?: string | null;
   blockName?: string | null;
@@ -959,13 +1013,14 @@ export interface ProgramsBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PageHeaderBlock".
+ * via the `definition` "TestimonialsListBlock".
  */
-export interface PageHeaderBlock {
-  title?: string | null;
+export interface TestimonialsListBlock {
+  heading: string;
+  items: (string | Testimonial)[];
   id?: string | null;
   blockName?: string | null;
-  blockType: 'pageHeader';
+  blockType: 'testimonialsList';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -993,6 +1048,70 @@ export interface Testimonial {
   photo: string | Media;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PageHeaderBlock".
+ */
+export interface PageHeaderBlock {
+  title?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'pageHeader';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "course-category".
+ */
+export interface CourseCategory {
+  id: string;
+  title: string;
+  /**
+   * Auto-generated from title if empty.
+   */
+  slug: string;
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "course".
+ */
+export interface Course {
+  id: string;
+  title: string;
+  /**
+   * Auto-generated from title if empty.
+   */
+  slug: string;
+  category: string | CourseCategory;
+  shortDescription?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  level?: ('beginner' | 'intermediate' | 'advanced') | null;
+  mode?: ('offline' | 'online' | 'hybrid') | null;
+  durationText?: string | null;
+  priceINR?: number | null;
+  isFeatured?: boolean | null;
+  sortOrder?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1205,6 +1324,14 @@ export interface PayloadLockedDocument {
         value: string | Category;
       } | null)
     | ({
+        relationTo: 'course-category';
+        value: string | CourseCategory;
+      } | null)
+    | ({
+        relationTo: 'course';
+        value: string | Course;
+      } | null)
+    | ({
         relationTo: 'users';
         value: string | User;
       } | null)
@@ -1358,7 +1485,55 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        testimonialsList?: T | TestimonialsListBlockSelect<T>;
         pageHeader?: T | PageHeaderBlockSelect<T>;
+        studentsShowcase?:
+          | T
+          | {
+              heading?: T;
+              students?:
+                | T
+                | {
+                    image?: T;
+                    name?: T;
+                    stream?: T;
+                    rank?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        studyCentres?:
+          | T
+          | {
+              heading?: T;
+              subheading?: T;
+              centres?:
+                | T
+                | {
+                    locationTitle?: T;
+                    locationAddress?: T;
+                    emailPrimary?: T;
+                    phone?: T;
+                    emailSecondary?: T;
+                    googleMapUrl?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        coursesExplorer?:
+          | T
+          | {
+              heading?: T;
+              basePath?: T;
+              maxCourses?: T;
+              showCategoryDescription?: T;
+              showCourseDescription?: T;
+              hideEmptyCategories?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   meta?:
     | T
@@ -1566,6 +1741,16 @@ export interface ProgramsBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsListBlock_select".
+ */
+export interface TestimonialsListBlockSelect<T extends boolean = true> {
+  heading?: T;
+  items?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "PageHeaderBlock_select".
  */
 export interface PageHeaderBlockSelect<T extends boolean = true> {
@@ -1729,6 +1914,38 @@ export interface CategoriesSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "course-category_select".
+ */
+export interface CourseCategorySelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "course_select".
+ */
+export interface CourseSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  category?: T;
+  shortDescription?: T;
+  description?: T;
+  level?: T;
+  mode?: T;
+  durationText?: T;
+  priceINR?: T;
+  isFeatured?: T;
+  sortOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

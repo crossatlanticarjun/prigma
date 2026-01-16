@@ -18,6 +18,7 @@ import { getServerSideURL } from './utilities/getURL'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { Testimonials } from './collections/Testimonials'
 import { HomePopup } from './globals/HomePopup'
+import { CoursesCollections } from './collections/Courses'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -33,7 +34,7 @@ export default buildConfig({
       beforeDashboard: ['@/components/BeforeDashboard'],
     },
     importMap: {
-      baseDir: path.resolve(dirname),
+      baseDir: path.resolve(dirname, 'src'),
     },
     user: Users.slug,
     livePreview: {
@@ -64,7 +65,7 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URL || '',
   }),
-  collections: [Pages, Posts, Testimonials, Media, Categories, Users],
+  collections: [Pages, Posts, Testimonials, Media, Categories, ...CoursesCollections, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, HomePopup],
   plugins: [
@@ -95,7 +96,7 @@ export default buildConfig({
   secret: process.env.PAYLOAD_SECRET,
   sharp,
   typescript: {
-    outputFile: path.resolve(dirname, 'payload-types.ts'),
+    outputFile: path.resolve(process.cwd(), 'src/payload-types.ts'),
   },
   jobs: {
     access: {
