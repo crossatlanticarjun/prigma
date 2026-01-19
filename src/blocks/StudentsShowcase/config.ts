@@ -16,6 +16,13 @@ export const StudentsShowcase: Block = {
       },
     },
     {
+      name: 'subheading',
+      type: 'text',
+      admin: {
+        placeholder: '(consent of students obtained before providing their information)',
+      },
+    },
+    {
       name: 'students',
       type: 'array',
       required: true,

@@ -24,6 +24,7 @@ type Student = {
 
 type Props = {
   heading: string
+  subheading: string
   students: Student[]
 }
 
@@ -44,7 +45,7 @@ function getMediaAlt(media: string | Media, fallback: string): string {
   return media.alt || fallback
 }
 
-export const StudentsShowcaseBlock: React.FC<Props> = ({ heading, students }) => {
+export const StudentsShowcaseBlock: React.FC<Props> = ({ heading, subheading, students }) => {
   return (
     <section className="w-full py-12 md:py-16">
       <div className="mx-auto container">
@@ -52,6 +53,7 @@ export const StudentsShowcaseBlock: React.FC<Props> = ({ heading, students }) =>
           <h2 className="text-2xl md:text-4xl font-semibold tracking-tight text-themeHeading">
             {heading}
           </h2>
+          <p className="mt-2 text-md leading-6 text-slate-600">{subheading}</p>
         </div>
 
         <div className="mt-8 md:mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">

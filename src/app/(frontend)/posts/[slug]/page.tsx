@@ -8,8 +8,6 @@ import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
 import RichText from '@/components/RichText'
 
-import type { Post } from '@/payload-types'
-
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
@@ -30,11 +28,7 @@ export async function generateStaticParams() {
     },
   })
 
-  const params = posts.docs.map(({ slug }) => {
-    return { slug }
-  })
-
-  return params
+  return posts.docs.map(({ slug }) => ({ slug }))
 }
 
 type Args = {
@@ -42,6 +36,24 @@ type Args = {
     slug?: string
   }>
 }
+
+const queryAllCategories = cache(async () => {
+  const payload = await getPayload({ config: configPromise })
+
+  const result = await payload.find({
+    collection: 'categories',
+    depth: 0,
+    limit: 1000,
+    sort: 'title',
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+    },
+  })
+
+  return result.docs
+})
 
 const queryLatestPosts = cache(async ({ excludeSlug }: { excludeSlug: string }) => {
   const payload = await getPayload({ config: configPromise })
@@ -53,6 +65,7 @@ const queryLatestPosts = cache(async ({ excludeSlug }: { excludeSlug: string }) 
     overrideAccess: false,
     sort: '-publishedAt', // if you don't have publishedAt, use '-createdAt'
     select: {
+      id: true,
       title: true,
       slug: true,
       meta: true,
@@ -68,11 +81,15 @@ const queryLatestPosts = cache(async ({ excludeSlug }: { excludeSlug: string }) 
 export default async function Post({ params: paramsPromise }: Args) {
   const { isEnabled: draft } = await draftMode()
   const { slug = '' } = await paramsPromise
-  // Decode to support slugs with special characters
+
   const decodedSlug = decodeURIComponent(slug)
   const url = '/posts/' + decodedSlug
-  const post = await queryPostBySlug({ slug: decodedSlug })
-  const latestPosts = await queryLatestPosts({ excludeSlug: decodedSlug })
+
+  const [post, latestPosts, allCategories] = await Promise.all([
+    queryPostBySlug({ slug: decodedSlug }),
+    queryLatestPosts({ excludeSlug: decodedSlug }),
+    queryAllCategories(),
+  ])
 
   if (!post) return <PayloadRedirects url={url} />
 
@@ -99,10 +116,11 @@ export default async function Post({ params: paramsPromise }: Args) {
                 data={post.content}
                 enableGutter={false}
               />
+
               {post.relatedPosts && post.relatedPosts.length > 0 && (
                 <RelatedPosts
                   className="mt-12 max-w-[52rem] lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
-                  docs={post.relatedPosts.filter((post) => typeof post === 'object')}
+                  docs={post.relatedPosts.filter((p) => typeof p === 'object')}
                 />
               )}
             </div>
@@ -110,6 +128,33 @@ export default async function Post({ params: paramsPromise }: Args) {
 
           {/* Sidebar */}
           <aside className="lg:sticky lg:top-24 h-fit rounded-lg border border-themeBlue/10 bg-themeBlue/5 p-5">
+            {/* All Categories */}
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold">Categories</h3>
+
+              <div className="mt-3 space-y-1">
+                <Link
+                  className="block rounded-lg bg-white p-3 hover:bg-themeBlue/20 duration-500"
+                  href="/posts"
+                >
+                  <div className="text-sm font-medium leading-snug line-clamp-1">All posts</div>
+                </Link>
+                {allCategories.map((cat) => (
+                  <Link
+                    key={cat.id}
+                    href={`/posts/category/${cat.slug}`}
+                    className="block rounded-lg bg-white p-3 hover:bg-themeBlue/20 duration-500"
+                  >
+                    <div className="text-sm font-medium leading-snug line-clamp-1">{cat.title}</div>
+                  </Link>
+                ))}
+
+                {allCategories.length === 0 && (
+                  <div className="text-sm text-slate-600">No categories found.</div>
+                )}
+              </div>
+            </div>
+
             <h3 className="text-lg font-semibold">Latest Posts</h3>
 
             <div className="mt-4 space-y-3">
@@ -122,6 +167,10 @@ export default async function Post({ params: paramsPromise }: Args) {
                   <div className="text-sm font-medium leading-snug line-clamp-2">{p.title}</div>
                 </Link>
               ))}
+
+              {latestPosts.length === 0 && (
+                <div className="text-sm text-slate-600">No latest posts found.</div>
+              )}
             </div>
           </aside>
         </div>
@@ -132,22 +181,20 @@ export default async function Post({ params: paramsPromise }: Args) {
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { slug = '' } = await paramsPromise
-  // Decode to support slugs with special characters
   const decodedSlug = decodeURIComponent(slug)
   const post = await queryPostBySlug({ slug: decodedSlug })
-
   return generateMeta({ doc: post })
 }
 
 const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
   const { isEnabled: draft } = await draftMode()
-
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({
     collection: 'posts',
     draft,
     limit: 1,
+    depth: 1,
     overrideAccess: draft,
     pagination: false,
     where: {

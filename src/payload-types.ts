@@ -268,6 +268,7 @@ export interface Page {
     | PageHeaderBlock
     | {
         heading: string;
+        subheading?: string | null;
         students: {
           image: string | Media;
           name: string;
@@ -1491,6 +1492,7 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               heading?: T;
+              subheading?: T;
               students?:
                 | T
                 | {
@@ -2371,7 +2373,7 @@ export interface Footer {
     | null;
   socials?:
     | {
-        platform: 'facebook' | 'instagram' | 'youtube' | 'linkedin' | 'x';
+        platform: 'facebook' | 'instagram' | 'youtube' | 'linkedin' | 'x' | 'whatsapp';
         url: string;
         id?: string | null;
       }[]

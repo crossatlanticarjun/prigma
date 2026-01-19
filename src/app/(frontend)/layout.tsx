@@ -21,6 +21,8 @@ import { getHeaderGlobal } from '@/utilities/getHeaderGlobal'
 import { FooterScripts } from '@/components/Head/FooterScripts'
 import { getFooterGlobal } from '@/utilities/getFooterGlobal'
 import { EnquiryPopupProvider } from '@/components/EnquiryPopup/EnquiryPopupProvider'
+import { TopLoader } from '@/components/TopBar'
+import ScrollToTop from '@/components/ScrollToTop'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const header = await getHeaderGlobal()
@@ -42,6 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
 
       <body>
+        <TopLoader />
         <Providers>
           <AdminBar adminBarProps={{ preview: isEnabled }} />
 
@@ -56,6 +59,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Footer />
           </EnquiryPopupProvider>
         </Providers>
+        <ScrollToTop />
       </body>
     </html>
   )
