@@ -1068,6 +1068,10 @@ export interface CourseCategory {
   id: string;
   title: string;
   /**
+   * Lower number shows first.
+   */
+  sortOrder?: number | null;
+  /**
    * Auto-generated from title if empty.
    */
   slug: string;
@@ -1923,6 +1927,7 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface CourseCategorySelect<T extends boolean = true> {
   title?: T;
+  sortOrder?: T;
   slug?: T;
   description?: T;
   updatedAt?: T;

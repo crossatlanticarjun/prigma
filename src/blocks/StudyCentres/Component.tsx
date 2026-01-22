@@ -94,11 +94,11 @@ export const StudyCentresBlock: React.FC<Props> = ({ heading, subheading, centre
                 </div>
               </div>
 
-              <div className="px-5 md:px-6 pb-5 md:pb-6">
+              {/* <div className="px-5 md:px-6 pb-5 md:pb-6">
                 <div className="rounded-lg bg-themeBlue/5 border border-black/5 p-4 text-xs md:text-sm text-themeText/80">
                   Pro tip: Share this centre link with parents for instant directions.
                 </div>
-              </div>
+              </div> */}
             </div>
           ))}
         </div>

@@ -19,6 +19,7 @@ type CourseCategory = {
   title: string
   slug: string
   description?: string | null
+  sortOrder?: number | null
   _status?: 'draft' | 'published'
 }
 
@@ -45,7 +46,7 @@ type BlockProps = {
   }
 }
 
-type CategoryLite = Pick<CourseCategory, 'id' | 'title' | 'slug' | 'description'>
+type CategoryLite = Pick<CourseCategory, 'id' | 'title' | 'slug' | 'description' | 'sortOrder'>
 type CourseLite = Pick<
   Course,
   'id' | 'title' | 'slug' | 'shortDescription' | 'category' | 'thumbnail' | 'sortOrder'
@@ -70,8 +71,9 @@ export async function CoursesExplorer({ block }: BlockProps) {
       collection: 'course-category',
       depth: 0,
       pagination: false,
-      sort: 'title',
-      select: { id: true, title: true, slug: true, description: true },
+      // ✅ sidebar + main sections follow this order
+      sort: ['sortOrder', 'title'],
+      select: { id: true, title: true, slug: true, description: true, sortOrder: true },
       where: { _status: { equals: 'published' } },
     }),
     payload.find({
