@@ -2317,6 +2317,10 @@ export interface Header {
    * Paste scripts you want injected into <head>. Example: Google Analytics, Meta Pixel. Do not paste <body> scripts here.
    */
   headerScripts?: string | null;
+  /**
+   * Injected immediately after <body> opens. Use this for Google Tag Manager <noscript> or any body-start HTML. Do not paste <script> that requires head here unless you know what you are doing.
+   */
+  bodyStartScripts?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2466,6 +2470,7 @@ export interface HeaderSelect<T extends boolean = true> {
         label?: T;
       };
   headerScripts?: T;
+  bodyStartScripts?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

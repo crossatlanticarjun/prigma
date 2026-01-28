@@ -23,6 +23,7 @@ import { getFooterGlobal } from '@/utilities/getFooterGlobal'
 import { EnquiryPopupProvider } from '@/components/EnquiryPopup/EnquiryPopupProvider'
 import { TopLoader } from '@/components/TopBar'
 import ScrollToTop from '@/components/ScrollToTop'
+import { BodyStartScripts } from '@/components/Head/BodyStartScripts'
 
 function buildGlobalJsonLd(siteUrl: string) {
   const SITE_NAME = 'PRiGma IIT JEE' // adjust if you want
@@ -88,6 +89,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
 
       <body>
+        <BodyStartScripts html={(header as any)?.bodyStartScripts ?? null} />
         <TopLoader />
         <Providers>
           <AdminBar adminBarProps={{ preview: isEnabled }} />

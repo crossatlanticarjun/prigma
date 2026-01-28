@@ -158,6 +158,18 @@ export const Header: GlobalConfig = {
           'Paste scripts you want injected into <head>. Example: Google Analytics, Meta Pixel. Do not paste <body> scripts here.',
       },
     },
+    // 9) Body Start Scripts (GTM noscript, etc.)
+    {
+      name: 'bodyStartScripts',
+      label: 'Body Start Scripts',
+      type: 'code',
+      required: false,
+      admin: {
+        language: 'html',
+        description:
+          'Injected immediately after <body> opens. Use this for Google Tag Manager <noscript> or any body-start HTML. Do not paste <script> that requires head here unless you know what you are doing.',
+      },
+    },
   ],
   hooks: {
     afterChange: [revalidateHeader],
