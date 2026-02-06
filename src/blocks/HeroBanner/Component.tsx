@@ -127,7 +127,7 @@ export function HeroBanner(props: HeroBannerBlockProps) {
         </div>
 
         {/* Desktop students (full-bleed right). Hidden on mobile */}
-        <div className="absolute inset-y-0 right-0 z-10 hidden w-[40%] translate-x-[6%] pointer-events-none lg:block">
+        <div className="absolute inset-y-0 right-0 z-10 hidden md:w-[50%] xl:w-[40%] translate-x-[6%] pointer-events-none lg:block">
           {fgUrl ? (
             <Image
               src={fgUrl}

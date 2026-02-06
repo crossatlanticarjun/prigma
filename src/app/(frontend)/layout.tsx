@@ -89,7 +89,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
 
       <body>
-        <BodyStartScripts html={(header as any)?.bodyStartScripts ?? null} />
+        <BodyStartScripts html={header?.bodyStartScripts ?? null} />
         <TopLoader />
         <Providers>
           <AdminBar adminBarProps={{ preview: isEnabled }} />

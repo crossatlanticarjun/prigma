@@ -50,7 +50,7 @@ export const TestimonialsCarouselClient: React.FC<Props> = ({
   if (!items?.length) return null
 
   return (
-    <section className="w-full py-12 md:py-16">
+    <section className="w-full py-12 md:py-16 overflow-hidden">
       <div className="mx-auto container">
         <div className="text-center max-w-5xl mx-auto">
           <div className="mx-auto inline-flex rounded-full bg-themeBlue px-6 py-2 text-md text-white">
