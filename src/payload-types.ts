@@ -274,6 +274,10 @@ export interface Page {
           name: string;
           stream: string;
           /**
+           * Result year (e.g., 2025, 2026)
+           */
+          year: number;
+          /**
            * Example: 1, 23, 145 (must be >= 1)
            */
           rank?: string | null;
@@ -1503,6 +1507,7 @@ export interface PagesSelect<T extends boolean = true> {
                     image?: T;
                     name?: T;
                     stream?: T;
+                    year?: T;
                     rank?: T;
                     id?: T;
                   };

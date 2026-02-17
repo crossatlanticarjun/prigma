@@ -52,6 +52,19 @@ export const StudentsShowcase: Block = {
           required: true,
         },
         {
+          name: 'year',
+          type: 'number',
+          required: true,
+          min: 2000,
+          max: 2100,
+          admin: {
+            placeholder: '2026',
+            description: 'Result year (e.g., 2025, 2026)',
+            step: 1,
+          },
+        },
+
+        {
           name: 'rank',
           type: 'text',
           admin: {
