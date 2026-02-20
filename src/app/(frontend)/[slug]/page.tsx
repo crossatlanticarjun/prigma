@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import React, { cache } from 'react'
+import React from 'react'
 import { draftMode } from 'next/headers'
 
 import { PayloadRedirects } from '@/components/PayloadRedirects'
@@ -47,16 +47,16 @@ export async function generateStaticParams() {
   )
 }
 
-const queryHomePopup = cache(async (): Promise<HomePopupType> => {
+const queryHomePopup = async (): Promise<HomePopupType> => {
   const payload = await getPayload({ config: configPromise })
   return payload.findGlobal({
     slug: 'homePopup',
     overrideAccess: false,
     depth: 3, // populate media
   }) as Promise<HomePopupType>
-})
+}
 
-const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
+const queryPageBySlug = async ({ slug }: { slug: string }) => {
   const { isEnabled: isDraft } = await draftMode()
   const payload = await getPayload({ config: configPromise })
 
@@ -72,7 +72,7 @@ const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
   })
 
   return result.docs?.[0] || null
-})
+}
 
 export default async function Page({ params: paramsPromise }: Args) {
   const { isEnabled: isDraft } = await draftMode()
