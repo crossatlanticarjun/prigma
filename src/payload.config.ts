@@ -15,7 +15,13 @@ import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+
+// ✅ S3 storage adapter (official)
+import { s3Storage } from '@payloadcms/storage-s3'
+
+// ✅ Vercel Blob storage adapter (DISABLED)
+// import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+
 import { Testimonials } from './collections/Testimonials'
 import { HomePopup } from './globals/HomePopup'
 import { CoursesCollections } from './collections/Courses'
@@ -23,14 +29,21 @@ import { CoursesCollections } from './collections/Courses'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+/**
+ * Enforce required env vars at runtime and fix TS `string | undefined` issues.
+ */
+function mustEnv(key: string): string {
+  const value = process.env[key]
+  if (!value || value.trim() === '') {
+    throw new Error(`Missing required environment variable: ${key}`)
+  }
+  return value
+}
+
 export default buildConfig({
   admin: {
     components: {
-      // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
       beforeLogin: ['@/components/BeforeLogin'],
-      // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
       beforeDashboard: ['@/components/BeforeDashboard'],
     },
     importMap: {
@@ -39,74 +52,89 @@ export default buildConfig({
     user: Users.slug,
     livePreview: {
       breakpoints: [
-        {
-          label: 'Mobile',
-          name: 'mobile',
-          width: 375,
-          height: 667,
-        },
-        {
-          label: 'Tablet',
-          name: 'tablet',
-          width: 768,
-          height: 1024,
-        },
-        {
-          label: 'Desktop',
-          name: 'desktop',
-          width: 1440,
-          height: 900,
-        },
+        { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
+        { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
+        { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
       ],
     },
   },
-  // This config helps us configure global or default features that the other editors can inherit
+
   editor: defaultLexical,
+
   db: mongooseAdapter({
-    url: process.env.DATABASE_URL || '',
+    url: mustEnv('DATABASE_URL'),
   }),
+
   collections: [Pages, Posts, Testimonials, Media, Categories, ...CoursesCollections, Users],
+
   cors: [getServerSideURL()].filter(Boolean),
+
   globals: [Header, Footer, HomePopup],
+
   plugins: [
-    vercelBlobStorage({
-      enabled: true,
+    /**
+     * ✅ DISABLED: Vercel Blob adapter (kept for reference)
+     */
+    // vercelBlobStorage({
+    //   enabled: true,
+    //   collections: { media: true },
+    //   cacheControlMaxAge: 60 * 60 * 24 * 30,
+    //   token: mustEnv('BLOB_READ_WRITE_TOKEN'),
+    // }),
+
+    /**
+     * ✅ ENABLED: AWS S3 adapter (matches Payload docs typing)
+     * Docs: https://payloadcms.com/docs/upload/storage-adapters
+     */
+    s3Storage({
       collections: {
-        media: true,
+        media: {
+          prefix: 'images',
+        },
       },
-      cacheControlMaxAge: 60 * 60 * 24 * 30,
-      token: process.env.BLOB_READ_WRITE_TOKEN,
+      bucket: process.env.S3_BUCKET!,
+      config: {
+        region: process.env.S3_REGION!,
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
+        },
+      },
     }),
+
     ...plugins,
     // storage-adapter-placeholder
   ],
+
   email: nodemailerAdapter({
     defaultFromName: process.env.EMAIL_FROM_NAME || 'PRiGma IIT JEE Classes',
     defaultFromAddress: process.env.EMAIL_FROM_ADDR || 'no-reply@prigmaiitjee.com',
     transportOptions: {
-      host: process.env.SMTP_HOST,
+      host: mustEnv('SMTP_HOST'),
       port: Number(process.env.SMTP_PORT || 587),
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: mustEnv('SMTP_USER'),
+        pass: mustEnv('SMTP_PASS'),
       },
-      // secure: true for 465, false for 587—set via your env if needed
+      // secure: true for 465, false for 587
     },
   }),
-  secret: process.env.PAYLOAD_SECRET,
+
+  secret: mustEnv('PAYLOAD_SECRET'),
+
   sharp,
+
   typescript: {
     outputFile: path.resolve(process.cwd(), 'src/payload-types.ts'),
   },
+
   jobs: {
     access: {
       run: ({ req }: { req: PayloadRequest }): boolean => {
-        // Allow logged in users to execute this endpoint (default)
+        // Allow logged in users
         if (req.user) return true
 
-        // If there is no logged in user, then check
-        // for the Vercel Cron secret to be present as an
-        // Authorization header:
+        // Vercel Cron secret support
         const authHeader = req.headers.get('authorization')
         return authHeader === `Bearer ${process.env.CRON_SECRET}`
       },

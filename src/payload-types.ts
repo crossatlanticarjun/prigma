@@ -411,6 +411,7 @@ export interface Media {
     };
     [k: string]: unknown;
   } | null;
+  prefix?: string | null;
   folder?: (string | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
@@ -1819,6 +1820,7 @@ export interface TestimonialsSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
+  prefix?: T;
   folder?: T;
   updatedAt?: T;
   createdAt?: T;

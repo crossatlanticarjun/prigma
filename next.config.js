@@ -10,6 +10,10 @@ const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
 const nextConfig = {
   images: {
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'pigma.s3.ap-southeast-2.amazonaws.com',
+      },
       ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].map((item) => {
         const url = new URL(item)
 
