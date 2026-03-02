@@ -1,6 +1,7 @@
 'use client'
 
 import { Send } from 'lucide-react'
+import Link from 'next/link'
 import React, { useEffect, useMemo, useState } from 'react'
 
 type Field =
@@ -269,16 +270,30 @@ export function EnquiryPopup({ open, onClose, formId, heading, subheading, priva
 
                     if (f.blockType === 'textarea') {
                       return (
-                        <textarea
-                          key={f.name}
-                          placeholder={placeholder}
-                          value={(values[f.name] as string) ?? ''}
-                          onChange={(e) => setVal(f.name, e.target.value)}
-                          className="w-full rounded-lg bg-white p-3 text-sm text-slate-800 outline-none placeholder:text-slate-600"
-                        />
+                        <div key={f.name}>
+                          <textarea
+                            key={f.name}
+                            placeholder={placeholder}
+                            value={(values[f.name] as string) ?? ''}
+                            onChange={(e) => setVal(f.name, e.target.value)}
+                            className="w-full rounded-lg bg-white p-3 text-sm text-slate-800 outline-none placeholder:text-slate-600"
+                          />
+                          <p className="text-sm text-white/95">
+                            By clicking Submit, you agree to our{' '}
+                            <Link
+                              className="underline underline-offset-4"
+                              href="/terms-and-conditions"
+                            >
+                              Terms of Services
+                            </Link>{' '}
+                            and that you have read our{' '}
+                            <Link className="underline underline-offset-4" href={privacyHref}>
+                              Privacy Policy
+                            </Link>
+                          </p>
+                        </div>
                       )
                     }
-
                     if (f.blockType === 'checkbox') {
                       return (
                         <label
@@ -292,11 +307,8 @@ export function EnquiryPopup({ open, onClose, formId, heading, subheading, priva
                             className="h-8 w-8 mt-0.5 rounded border border-slate-600"
                           />
                           <span>
-                            I understand that your personal data will be used in accordance with the{' '}
-                            <a className="underline underline-offset-4" href={privacyHref}>
-                              Privacy Policy
-                            </a>{' '}
-                            here*
+                            I hereby authorize to send notifications on
+                            SMS/Messages/Promotional/Informational messages I understand that your*
                           </span>
                         </label>
                       )
