@@ -320,6 +320,7 @@ export interface Page {
         blockName?: string | null;
         blockType: 'coursesExplorer';
       }
+    | ScholarshipBatchFormBlock
   )[];
   meta?: {
     title?: string | null;
@@ -1067,6 +1068,26 @@ export interface PageHeaderBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ScholarshipBatchFormBlock".
+ */
+export interface ScholarshipBatchFormBlock {
+  sectionId?: string | null;
+  scholarshipTitle: string;
+  scholarshipPoints: {
+    point: string;
+    id?: string | null;
+  }[];
+  batchTitle: string;
+  batchLines: {
+    line: string;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'scholarshipBatchForm';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "course-category".
  */
 export interface CourseCategory {
@@ -1546,6 +1567,7 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        scholarshipBatchForm?: T | ScholarshipBatchFormBlockSelect<T>;
       };
   meta?:
     | T
@@ -1767,6 +1789,29 @@ export interface TestimonialsListBlockSelect<T extends boolean = true> {
  */
 export interface PageHeaderBlockSelect<T extends boolean = true> {
   title?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ScholarshipBatchFormBlock_select".
+ */
+export interface ScholarshipBatchFormBlockSelect<T extends boolean = true> {
+  sectionId?: T;
+  scholarshipTitle?: T;
+  scholarshipPoints?:
+    | T
+    | {
+        point?: T;
+        id?: T;
+      };
+  batchTitle?: T;
+  batchLines?:
+    | T
+    | {
+        line?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }

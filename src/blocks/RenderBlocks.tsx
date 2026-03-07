@@ -17,6 +17,7 @@ import { PageHeaderBlock } from '@/blocks/PageHeader/Component'
 import { StudentsShowcaseBlock } from '@/blocks/StudentsShowcase/Component'
 import { StudyCentresBlock } from '@/blocks/StudyCentres/Component'
 import { CoursesExplorer } from '@/blocks/CoursesExplorer'
+import { ScholarshipBatchFormBlockComponent } from './ScholarshipBatchForm/Component'
 
 type LayoutBlock = NonNullable<Page['layout']>[number]
 type BlockRenderer = React.ComponentType<{ block: LayoutBlock }>
@@ -45,6 +46,7 @@ const blockMap: Record<string, BlockRenderer> = {
 
   // This one already expects { block }
   testimonialsCarousel: TestimonialsCarouselBlock as unknown as BlockRenderer,
+  scholarshipBatchForm: ScholarshipBatchFormBlockComponent as unknown as BlockRenderer,
 }
 
 export const RenderBlocks: React.FC<{ blocks: LayoutBlock[] }> = ({ blocks: layout }) => {

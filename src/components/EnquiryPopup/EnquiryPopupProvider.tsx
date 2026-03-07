@@ -11,7 +11,7 @@ type OpenOptions = {
 }
 
 type ProviderDefaults = {
-  formId: string // REQUIRED
+  formId: string
   heading?: string
   subheading?: string
   privacyHref?: string
@@ -20,6 +20,10 @@ type ProviderDefaults = {
 type Ctx = {
   open: (opts?: OpenOptions) => void
   close: () => void
+  formId: string
+  heading: string
+  subheading: string
+  privacyHref: string
 }
 
 const EnquiryPopupContext = createContext<Ctx | null>(null)
@@ -41,9 +45,25 @@ export function EnquiryPopupProvider({
 
   const close = useCallback(() => setIsOpen(false), [])
 
-  const value = useMemo(() => ({ open, close }), [open, close])
-
   const formId = opts.formId ?? defaultOptions.formId
+  const heading = opts.heading ?? defaultOptions.heading ?? 'Enquire Today!'
+  const subheading =
+    opts.subheading ??
+    defaultOptions.subheading ??
+    'Ready to take the next step? Reach out now to discuss admissions, programs, or any questions.'
+  const privacyHref = opts.privacyHref ?? defaultOptions.privacyHref ?? '/privacy-policy'
+
+  const value = useMemo<Ctx>(
+    () => ({
+      open,
+      close,
+      formId,
+      heading,
+      subheading,
+      privacyHref,
+    }),
+    [open, close, formId, heading, subheading, privacyHref],
+  )
 
   return (
     <EnquiryPopupContext.Provider value={value}>
@@ -53,13 +73,9 @@ export function EnquiryPopupProvider({
         open={isOpen}
         onClose={close}
         formId={formId}
-        heading={opts.heading ?? defaultOptions.heading ?? 'Enquire Today!'}
-        subheading={
-          opts.subheading ??
-          defaultOptions.subheading ??
-          'Ready to take the next step? Reach out now to discuss admissions, programs, or any questions.'
-        }
-        privacyHref={opts.privacyHref ?? defaultOptions.privacyHref ?? '/privacy-policy'}
+        heading={heading}
+        subheading={subheading}
+        privacyHref={privacyHref}
       />
     </EnquiryPopupContext.Provider>
   )
