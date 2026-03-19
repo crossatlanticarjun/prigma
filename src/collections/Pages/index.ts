@@ -32,6 +32,7 @@ import { StudentsShowcase } from '@/blocks/StudentsShowcase/config'
 import { StudyCentres } from '@/blocks/StudyCentres/config'
 import { CoursesExplorerBlock } from '@/blocks/CoursesExplorer/config'
 import { ScholarshipBatchForm } from '@/blocks/ScholarshipBatchForm/config'
+import { YouTubeVideos } from '@/blocks/YouTubeVideos/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -102,6 +103,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 StudyCentres,
                 CoursesExplorerBlock,
                 ScholarshipBatchForm,
+                YouTubeVideos,
               ],
               required: true,
               admin: {

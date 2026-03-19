@@ -321,6 +321,7 @@ export interface Page {
         blockType: 'coursesExplorer';
       }
     | ScholarshipBatchFormBlock
+    | YouTubeVideosBlock
   )[];
   meta?: {
     title?: string | null;
@@ -1088,6 +1089,27 @@ export interface ScholarshipBatchFormBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "YouTubeVideosBlock".
+ */
+export interface YouTubeVideosBlock {
+  heading?: string | null;
+  videos?:
+    | {
+        /**
+         * Add only the YouTube video ID, not the full URL.
+         */
+        videoId: string;
+        title?: string | null;
+        type?: ('short' | 'video') | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'youtubeVideos';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "course-category".
  */
 export interface CourseCategory {
@@ -1568,6 +1590,7 @@ export interface PagesSelect<T extends boolean = true> {
               blockName?: T;
             };
         scholarshipBatchForm?: T | ScholarshipBatchFormBlockSelect<T>;
+        youtubeVideos?: T | YouTubeVideosBlockSelect<T>;
       };
   meta?:
     | T
@@ -1810,6 +1833,23 @@ export interface ScholarshipBatchFormBlockSelect<T extends boolean = true> {
     | T
     | {
         line?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "YouTubeVideosBlock_select".
+ */
+export interface YouTubeVideosBlockSelect<T extends boolean = true> {
+  heading?: T;
+  videos?:
+    | T
+    | {
+        videoId?: T;
+        title?: T;
+        type?: T;
         id?: T;
       };
   id?: T;

@@ -18,6 +18,7 @@ import { StudentsShowcaseBlock } from '@/blocks/StudentsShowcase/Component'
 import { StudyCentresBlock } from '@/blocks/StudyCentres/Component'
 import { CoursesExplorer } from '@/blocks/CoursesExplorer'
 import { ScholarshipBatchFormBlockComponent } from './ScholarshipBatchForm/Component'
+import { YouTubeVideosBlock } from '@/blocks/YouTubeVideos/Component'
 
 type LayoutBlock = NonNullable<Page['layout']>[number]
 type BlockRenderer = React.ComponentType<{ block: LayoutBlock }>
@@ -41,6 +42,7 @@ const blockMap: Record<string, BlockRenderer> = {
   pageHeader: asSpreadProps(PageHeaderBlock),
   testimonialsList: asSpreadProps(TestimonialsListBlock),
   studentsShowcase: asSpreadProps(StudentsShowcaseBlock),
+  youtubeVideos: asSpreadProps(YouTubeVideosBlock),
   studyCentres: asSpreadProps(StudyCentresBlock),
   coursesExplorer: CoursesExplorer as unknown as BlockRenderer,
 
