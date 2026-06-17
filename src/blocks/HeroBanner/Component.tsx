@@ -527,7 +527,7 @@ export function HeroBanner(props: HeroBannerBlockProps) {
               </button>
             </div>
 
-            {/* Mobile students: contained, centered, safe height Work */}
+            {/* Mobile students: contained, centered, safe height */}
             <div className="relative lg:hidden">
               <div className="relative mx-auto h-[400px] w-full max-w-[400px] sm:h-[260px]">
                 {fgUrl ? (
