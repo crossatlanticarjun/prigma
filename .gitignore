@@ -15,6 +15,9 @@ public/sitemap*.xml
 
 # Playwright
 node_modules/
+.cursor/
+.kiro/
+.vscode/
 /test-results/
 /playwright-report/
 /blob-report/
